@@ -3,7 +3,7 @@ import { Config } from '@verdaccio/types';
 import { Options } from 'ldapauth-fork';
 import * as bunyan from 'bunyan';
 
-import AuthCustomPlugin from '../index';
+import AuthCustomPlugin from '../src/index';
 
 import 'ts-jest';
 import { spawn } from 'child_process';
