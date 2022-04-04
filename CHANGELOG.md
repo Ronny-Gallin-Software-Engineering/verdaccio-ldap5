@@ -1,3 +1,6 @@
+# 5.8.0 / 2022-04-04
+- upgrade to use verdaccio 5.8.0
+
 # 4.2.0 / 2020-08-15
 - Support using env to set adminPassword #79 (@secret104278)
 - Update dev. dependencies

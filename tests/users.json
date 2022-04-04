@@ -1,7 +1,8 @@
 [
   {
-    "dn": "ou=users,dc=myorg,dc=com",
-    "cn": "user",
+    "dn": "cn=testee,ou=users,o=rgse",
+    "cn": "testee",
+    "objectClass": "posixAccount",
     "attribute1": "value1",
     "attribute2": "value2"
   }

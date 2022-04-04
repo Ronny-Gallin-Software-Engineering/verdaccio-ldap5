@@ -1,17 +1,16 @@
-# verdaccio-ldap [![Build Status](https://travis-ci.org/Alexandre-io/verdaccio-ldap.svg?branch=master)](https://travis-ci.org/Alexandre-io/verdaccio-ldap) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b15683d154d44347bccc4360d48436a7)](https://www.codacy.com/app/alexandre_io/verdaccio-ldap?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Alexandre-io/verdaccio-ldap&amp;utm_campaign=Badge_Grade) [![Known Vulnerabilities](https://snyk.io/test/github/Alexandre-io/verdaccio-ldap/badge.svg)](https://snyk.io/test/github/Alexandre-io/verdaccio-ldap)
+# verdaccio-ldap5
 
-`verdaccio-ldap` is a fork of `sinopia-ldap`. It aims to keep backwards compatibility with `sinopia`, while keeping up with npm changes.
+> a port of the verdaccio-ldap to version 5
+> See  [verdaccio-ldap](https://github.com/Alexandre-io/verdaccio-ldap)
+
+---
 
 ## Installation
 
 ```sh
 $ npm install verdaccio
-$ npm install verdaccio-ldap
+$ npm install verdaccio-ldap5
 ```
-
-> A detailed example of the verdaccio-ldap plugin + OpenLDAP server packed in Docker for v3 is available [here](https://github.com/verdaccio/docker-examples/tree/master/ldap-verdaccio) and for v4 [here](https://github.com/verdaccio/docker-examples/tree/master/ldap-verdaccio-v4).
-
-[Read a guide how to migrate from Verdaccio v3 to v4 using LDAP plugin](https://verdaccio.org/blog/2019/10/05/verdaccio-4-with-ldap-and-docker).
 
 ## Config
 
@@ -19,7 +18,7 @@ Add to your `config.yaml`:
 
 ```yaml
 auth:
-  ldap:
+  ldap5:
     type: ldap
     # Only required if you are fetching groups that do not have a "cn" property. defaults to "cn"
     groupNameAttribute: "ou"
@@ -57,7 +56,7 @@ You can use `LDAP_ADMIN_PASS` to set ldap admin password, it will override the o
 It's called as:
 
 ```js
-require('verdaccio-ldap')(config, stuff)
+require('verdaccio-ldap5')(config, stuff)
 ```
 
 Where:
@@ -86,4 +85,3 @@ This should export two functions:
     - `cb(null, [groups])` in case user is authenticated
 
    Groups is an array of all users/usergroups this user has access to. You should probably include username itself here.
-
