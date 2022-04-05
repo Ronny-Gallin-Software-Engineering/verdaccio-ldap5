@@ -1,6 +1,6 @@
 {
   "name": "verdaccio-ldap5",
-  "version": "5.8.0",
+  "version": "0.0.2",
   "description": "a port of the verdaccio-ldap to version 5",
   "keywords": [
     "verdaccio,npm,ldap,verdaccio-]"
