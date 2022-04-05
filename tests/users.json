@@ -4,6 +4,28 @@
     "cn": "testee",
     "objectClass": "posixAccount",
     "attribute1": "value1",
-    "attribute2": "value2"
+    "attribute2": "value2",
+    "memberOf": ["cn=testeegroup,ou=groups,o=rgse"]
+  },
+  {
+    "dn": "cn=testee1,ou=users,o=rgse",
+    "cn": "testee1",
+    "objectClass": "posixAccount",
+    "attribute1": "value1",
+    "attribute2": "value2",
+    "memberOf": []
+  },
+  {
+    "dn": "cn=testee2,ou=users,o=rgse",
+    "cn": "testee2",
+    "objectClass": "posixAccount",
+    "attribute1": "value1",
+    "attribute2": "value2",
+    "memberOf": ["cn=testeegroup,ou=groups,o=rgse"]
+  },
+  {
+    "dn": "cn=testeegroup,ou=groups,o=rgse",
+    "cn": "testeegroup",
+    "objectClass": "group"
   }
 ]

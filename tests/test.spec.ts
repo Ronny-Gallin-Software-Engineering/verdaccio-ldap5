@@ -3,12 +3,13 @@ import { Config } from '@verdaccio/types';
 import { Options } from 'ldapauth-fork';
 import * as bunyan from 'bunyan';
 
-import AuthCustomPlugin from '../src/index';
+import AuthCustomPlugin, { CachableUserGroups } from '../src/index';
 
 import 'ts-jest';
 import { spawn } from 'child_process';
 
 const userName = 'testee';
+const group = 'testeegroup';
 
 const client_options: Options = {
   url: 'ldap://127.0.0.1:4389',
@@ -43,6 +44,7 @@ const config: Config = {
   user_agent: '',
   server_id: '',
   secret: '',
+  userRateLimit: {},
   uplinks: {},
   self_path: '',
   packages: {},
@@ -95,14 +97,101 @@ describe('ldap auth', () => {
     jest.setTimeout(5000);
   });
 
-  describe('tests without cache', () => {
-    const user: RemoteUser = {
+  describe('tests about access control', () => {
+    const testee: RemoteUser = {
       real_groups: [],
-      groups: [],
+      groups: ['Testuser'],
       name: 'Testuser'
     };
 
-    const pgk: PackageAccess = {};
+    const testee1: RemoteUser = {
+      name: 'testee1',
+      groups: ['testee1'],
+      real_groups: []
+    };
+
+    const testee2: RemoteUser = {
+      name: 'testee2',
+      groups: ['testee2', 'testeegroup'],
+      real_groups: []
+    };
+
+    const pgk: any = {
+      access: ['Testuser', 'testeegroup'],
+      publish: ['Testuser', 'testeegroup'],
+      unpublish: ['Testuser', 'testeegroup']
+    };
+
+    beforeEach(() => {
+      auth = new AuthCustomPlugin(config, options);
+    });
+
+    test('is allowed to publish', done => {
+      auth.allow_publish(testee, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(true);
+        done();
+      });
+    });
+
+    test('is allowed to unpublish', done => {
+      auth.allow_unpublish(testee, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(true);
+        done();
+      });
+    });
+
+    test('is allowed to access', done => {
+      auth.allow_access(testee, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(true);
+        done();
+      });
+    });
+
+    test('is not allowed to access', done => {
+      auth.allow_access(testee1, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(false);
+        done();
+      });
+    });
+
+    test('is not allowed to publish', done => {
+      auth.allow_publish(testee1, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(false);
+        done();
+      });
+    });
+
+    test('is not allowed to unpublish', done => {
+      auth.allow_unpublish(testee1, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(false);
+        done();
+      });
+    });
+
+    test('is allowed to publish by group', done => {
+      auth.allow_publish(testee2, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(true);
+        done();
+      });
+    });
+
+    test('is allowed to access by group', done => {
+      auth.allow_access(testee2, pgk, (error, result) => {
+        expect(error).toBeNull();
+        expect(result).toBe(true);
+        done();
+      });
+    });
+  });
+
+  describe('tests without cache', () => {
 
     beforeEach(() => {
       auth = new AuthCustomPlugin(config, options);
@@ -112,30 +201,7 @@ describe('ldap auth', () => {
       auth.authenticate(userName, 'password', (err, results) => {
         expect(err).toBeNull();
         expect(results[0]).toEqual(userName);
-        done();
-      });
-    });
-
-    test('is allowed to publish', done => {
-      auth.allow_publish(user, pgk, (error, result) => {
-        expect(error).toBeNull();
-        expect(result).toBe(true);
-        done();
-      });
-    });
-
-    test('is allowed to unpublish', done => {
-      auth.allow_unpublish(user, pgk, (error, result) => {
-        expect(error).toBeNull();
-        expect(result).toBe(true);
-        done();
-      });
-    });
-
-    test('is allowed to access', done => {
-      auth.allow_access(user, pgk, (error, result) => {
-        expect(error).toBeNull();
-        expect(result).toBe(true);
+        expect(results[1]).toEqual(group);
         done();
       });
     });
@@ -157,14 +223,13 @@ describe('ldap auth', () => {
     it('should use cache', done => {
       auth.authenticate(userName, 'password', (err, results) => {
         expect(err).toBeNull();
-        expect(results.cacheHit).toBeFalsy();
+        expect((results as CachableUserGroups).cacheHit).toBeFalsy();
         expect(results[0]).toEqual(userName);
 
         auth.authenticate(userName, 'password', (err, results) => {
           expect(err).toBeNull();
           expect(results).toBeTruthy();
-          logger.info(results);
-          expect(results.cacheHit).toBeTruthy();
+          expect((results as CachableUserGroups).cacheHit).toBeTruthy();
           expect(results[0]).toEqual(userName);
 
           done();
