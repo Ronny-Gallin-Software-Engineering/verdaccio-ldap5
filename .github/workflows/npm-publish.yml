@@ -23,7 +23,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - uses: actions/download-artifact@v3
         with:
-          name: libs-artifacts
+          name: artifact
           path: lib
       - run: npm publish
         env:
