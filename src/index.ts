@@ -26,8 +26,7 @@ export default class AuthCustomPlugin implements IPluginAuth<Config> {
 
   public logger: Logger;
   public userCache?: CacheContainer;
-  public users = {};
-  private salt = 10;
+  private salt = Math.random();
   private expire = 0;
 
   public constructor(public config: Config, options: PluginOptions<Config>) {
@@ -104,6 +103,7 @@ export default class AuthCustomPlugin implements IPluginAuth<Config> {
   }
 
   private allow(user: RemoteUser, required: string[] | undefined): boolean {
+    this.logger.info(`allow ${JSON.stringify(required)}`);
     return required ? required.some(accessValue => user.groups.indexOf(accessValue) >= 0) : true;
   }
 
