@@ -51,6 +51,7 @@ describe('ldap auth', () => {
         it('should match user', done => {
           auth.authenticate(userName, 'password', (err, results) => {
             expect(err).toBeNull();
+            logger.info(results);
             expect(results[0]).toEqual(userName);
             expect(results[1]).toEqual(group);
             done();

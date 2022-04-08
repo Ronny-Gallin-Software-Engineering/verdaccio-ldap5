@@ -103,7 +103,6 @@ export default class AuthCustomPlugin implements IPluginAuth<Config> {
   }
 
   private allow(user: RemoteUser, required: string[] | undefined): boolean {
-    this.logger.info(`allow ${JSON.stringify(required)}`);
     return required ? required.some(accessValue => user.groups.indexOf(accessValue) >= 0) : true;
   }
 
